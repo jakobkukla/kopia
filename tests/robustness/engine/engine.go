@@ -115,7 +115,7 @@ func (e *Engine) Shutdown(ctx context.Context) error {
 	if lastWriteEntry != nil {
 		if lastSnapEntry == nil || lastSnapEntry.Idx < lastWriteEntry.Idx {
 			// Only force a final snapshot if the data tree has been modified since the last snapshot
-			e.ExecAction(ctx, SnapshotDirActionKey, make(map[string]string)) //nolint:errcheck
+			// e.ExecAction(ctx, SnapshotDirActionKey, make(map[string]string)) //nolint:errcheck
 		}
 	}
 

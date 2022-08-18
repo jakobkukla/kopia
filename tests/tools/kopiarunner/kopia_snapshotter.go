@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"encoding/pem"
 	"fmt"
+	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -127,6 +128,7 @@ func (ks *KopiaSnapshotter) ConnectOrCreateFilesystemWithServer(serverAddr, repo
 // connection was unsuccessful.
 func (ks *KopiaSnapshotter) ConnectOrCreateFilesystem(repoPath string) error {
 	args := []string{"filesystem", "--path", repoPath}
+	// args := []string{"filesystem", "--path", repoPath, "--format-version", "1"}
 
 	return ks.ConnectOrCreateRepo(args...)
 }
@@ -498,6 +500,30 @@ func (ks *KopiaSnapshotter) GetRepositoryStatus() (cli.RepositoryStatus, error) 
 // from current format version to latest stable format version.
 func (ks *KopiaSnapshotter) UpgradeRepository(repoPath string) error {
 	_, _, err := ks.Runner.Run("repository", "set-parameters", "--upgrade")
+
+	return err
+}
+
+// DisconnectRepository returns the repository status in JSON format.
+func (ks *KopiaSnapshotter) DisconnectRepository() error {
+	_, _, err := ks.Runner.Run("repository", "disconnect")
+
+	return err
+}
+
+// ClearKopiaCache returns the repository status in JSON format.
+func (ks *KopiaSnapshotter) ClearKopiaCache() error {
+	_, _, err := ks.Runner.Run("cache", "clear")
+
+	return err
+}
+
+// DeleteKopiaConfig returns the repository status in JSON format.
+func (ks *KopiaSnapshotter) DeleteKopiaConfig(rs cli.RepositoryStatus) error {
+	// delete config file
+	err := os.Remove(rs.ConfigFile)
+
+	log.Println("Deleted kopia config file")
 
 	return err
 }
