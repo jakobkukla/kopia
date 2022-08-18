@@ -78,8 +78,8 @@ func TestMain(m *testing.M) {
 	// run the tests
 	result := m.Run()
 
-	// // err := th.cleanup(ctx)
-	// exitOnError("Could not clean up after engine execution", err)
+	err := th.cleanup(ctx)
+	exitOnError("Could not clean up after engine execution", err)
 
 	os.Exit(result)
 }
