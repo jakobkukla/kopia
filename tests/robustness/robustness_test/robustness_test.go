@@ -6,9 +6,6 @@ package robustness
 import (
 	"errors"
 	"fmt"
-	"log"
-	"os"
-	"os/exec"
 	"strconv"
 	"testing"
 
@@ -40,51 +37,51 @@ func TestManySmallFiles(t *testing.T) {
 
 	ctx := testlogging.ContextWithLevel(t, testlogging.LevelInfo)
 
-	kopiaExe := os.Getenv("KOPIA_EXE")
+	// kopiaExe := os.Getenv("KOPIA_EXE")
 
 	_, err := eng.ExecAction(ctx, engine.WriteRandomFilesActionKey, fileWriteOpts)
 	require.NoError(t, err)
 
-	// _, err = eng.ExecAction(ctx, engine.SnapshotDirActionKey, nil)
-	// require.NoError(t, err)
+	snapOut, err := eng.ExecAction(ctx, engine.SnapshotDirActionKey, nil)
+	require.NoError(t, err)
 
-	// _, err = eng.ExecAction(ctx, engine.RestoreSnapshotActionKey, snapOut)
-	// require.NoError(t, err)
+	_, err = eng.ExecAction(ctx, engine.RestoreSnapshotActionKey, snapOut)
+	require.NoError(t, err)
 
-	//connect, /var/folders/cb/7k5w4dgs6c1gs3m0n1qf2rkc0000gp/T/engine-data-2798515155/kopia-config3684487035/.kopia.config
-	out, err := exec.Command(kopiaExe, "repo", "connect", "filesystem", "--path", "/Users/chaitali.gondhalekar/Work/Kasten/kopia_dummy_repo/robustness-data", "--content-cache-size-mb", "500", "--metadata-cache-size-mb", "500", "--no-check-for-updates", "--password", "qWQPJ2hiiLgWRRCr").Output()
-	if err != nil {
-		t.FailNow()
-	}
-	log.Println("repo connect: ", string(out))
+	// //connect, /var/folders/cb/7k5w4dgs6c1gs3m0n1qf2rkc0000gp/T/engine-data-2798515155/kopia-config3684487035/.kopia.config
+	// out, err := exec.Command(kopiaExe, "repo", "connect", "filesystem", "--path", "/Users/chaitali.gondhalekar/Work/Kasten/kopia_dummy_repo/robustness-data", "--content-cache-size-mb", "500", "--metadata-cache-size-mb", "500", "--no-check-for-updates", "--password", "qWQPJ2hiiLgWRRCr").Output()
+	// if err != nil {
+	// 	t.FailNow()
+	// }
+	// log.Println("repo connect: ", string(out))
 
-	//repo status
-	out, err = exec.Command(kopiaExe, "repository", "status", "--json").Output()
-	if err != nil {
-		t.FailNow()
-	}
-	log.Println("repo status: ", string(out))
+	// //repo status
+	// out, err = exec.Command(kopiaExe, "repository", "status", "--json").Output()
+	// if err != nil {
+	// 	t.FailNow()
+	// }
+	// log.Println("repo status: ", string(out))
 
-	//snapshot
-	dataDir := ""
-	// /Users/chaitali.gondhalekar/Work/Kasten/kopia_dummy_repo/fio-data-1578447550'
-	out, err = exec.Command(kopiaExe, "snapshot", "--parallel", "8", "--no-progress", dataDir).Output()
-	// out, err := cmd.CombinedOutput()
-	if err != nil {
-		t.FailNow()
-	}
-	log.Println("snapshot output: ", string(out))
+	// //snapshot
+	// dataDir := ""
+	// // /Users/chaitali.gondhalekar/Work/Kasten/kopia_dummy_repo/fio-data-1578447550'
+	// out, err = exec.Command(kopiaExe, "snapshot", "--parallel", "8", "--no-progress", dataDir).Output()
+	// // out, err := cmd.CombinedOutput()
+	// if err != nil {
+	// 	t.FailNow()
+	// }
+	// log.Println("snapshot output: ", string(out))
 
-	// assign the snap ID in debugger
-	snapID := "k6b45bf2d9c17daa5e8301f11080813b7"
-	// restore using CLI
-	cmd := exec.Command(kopiaExe, "restore", snapID, t.TempDir())
+	// // assign the snap ID in debugger
+	// snapID := "k6b45bf2d9c17daa5e8301f11080813b7"
+	// // restore using CLI
+	// cmd := exec.Command(kopiaExe, "restore", snapID, t.TempDir())
 
-	out, err = cmd.CombinedOutput()
-	if err != nil {
-		t.FailNow()
-	}
-	log.Println(out)
+	// out, err = cmd.CombinedOutput()
+	// if err != nil {
+	// 	t.FailNow()
+	// }
+	// log.Println(out)
 }
 
 func TestOneLargeFile(t *testing.T) {

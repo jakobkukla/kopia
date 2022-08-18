@@ -47,6 +47,8 @@ func (ks *KopiaSnapshotter) ConnectOrCreateRepo(repoPath string) error {
 
 	_, _, err := ks.snap.Run("policy", "set", "--global", "--keep-latest", strconv.Itoa(1<<31-1), "--compression", "s2-default")
 
+	_, _, err = ks.snap.Run("repo", "status", "--json")
+
 	return err
 }
 
