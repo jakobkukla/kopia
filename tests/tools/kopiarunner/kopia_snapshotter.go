@@ -127,8 +127,8 @@ func (ks *KopiaSnapshotter) ConnectOrCreateFilesystemWithServer(serverAddr, repo
 // filesystem at the path provided. It will attempt to create one there if
 // connection was unsuccessful.
 func (ks *KopiaSnapshotter) ConnectOrCreateFilesystem(repoPath string) error {
-	args := []string{"filesystem", "--path", repoPath}
-	// args := []string{"filesystem", "--path", repoPath, "--format-version", "1"}
+	// args := []string{"filesystem", "--path", repoPath}
+	args := []string{"filesystem", "--path", repoPath, "--format-version", "1"}
 
 	return ks.ConnectOrCreateRepo(args...)
 }
